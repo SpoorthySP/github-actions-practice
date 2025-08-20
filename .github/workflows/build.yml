@@ -1,7 +1,7 @@
 name: Build Automation - Node.js
 
 on: 
- workflow_dispatch:
+  workflow_dispatch:
 
 jobs:
   build:
@@ -18,22 +18,21 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '18'
+          node-version: ${{ matrix.node-version }}
+
+      - name: Cache Node.js modules
+        uses: actions/cache@v3
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
 
       - name: Install dependencies
-        run: npm install
+        run: npm ci
 
       - name: Run script
         run: node app.js
 
       - name: Run Lint
-        run: npm run lint
-
-      - name: Cache Node.js modules
-        uses: actions/cache@v3
-        with:
-           path: ~/.npm
-           key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
-           restore-keys: |
-             ${{ runner.os }}-node-
-
+        run: npx eslint .
