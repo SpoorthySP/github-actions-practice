@@ -1,9 +1,6 @@
 name: Build Automation - Node.js
 
 on: 
- push:
-  branches:
-      - main
  workflow_dispatch:
 
 jobs:
